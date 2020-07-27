@@ -1,9 +1,9 @@
 package com.example.lift.buttonpanel;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class PanelConfig {
@@ -12,7 +12,14 @@ public class PanelConfig {
   int numberOfFloors;
 
   @Bean
-  public PanelController panelController(ApplicationEventPublisher applicationEventPublisher) {
-    return new PanelController(CarButtonsPanel.getInstance(numberOfFloors), CallButtonsPanel.getInstance(numberOfFloors), applicationEventPublisher);
+  @Scope("singleton")
+  public CarButtonsPanel carButtonsPanel() {
+    return CarButtonsPanel.getInstance(numberOfFloors);
+  }
+
+  @Bean
+  @Scope("singleton")
+  public CallButtonsPanel callButtonsPanel() {
+    return CallButtonsPanel.getInstance(numberOfFloors);
   }
 }
