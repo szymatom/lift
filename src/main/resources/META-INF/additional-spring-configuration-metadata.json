@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "numberOfFloors",
+      "type": "java.lang.Integer",
+      "description": "Number of floors in the building."
+    }
+  ] }
