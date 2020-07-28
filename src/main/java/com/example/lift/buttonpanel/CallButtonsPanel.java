@@ -27,7 +27,7 @@ public final class CallButtonsPanel {
   }
 
   private Map<Direction, ButtonState> getButtons(int currentFloor, int numberOfFloors) {
-    Map<Direction, ButtonState> result = new ConcurrentHashMap<>();
+    final Map<Direction, ButtonState> result = new ConcurrentHashMap<>();
     if (currentFloor == 0)
       result.put(UP, INACTIVE);
     else if (currentFloor == numberOfFloors - 1)

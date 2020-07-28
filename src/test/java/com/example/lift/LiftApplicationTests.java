@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest
-@ContextConfiguration(classes = {ApplicationConfig.class, ButtonPushEndpoint.class, PanelConfig.class, PanelController.class})
+@ContextConfiguration(classes = {ApplicationConfig.class, ButtonPushEndpoint.class, PanelConfig.class})
 class LiftApplicationTests {
 
   @Test

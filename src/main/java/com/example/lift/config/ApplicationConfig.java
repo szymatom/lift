@@ -1,8 +1,10 @@
 package com.example.lift.config;
 
-import com.example.lift.buttonpanel.CallButtonsPanel;
-import com.example.lift.buttonpanel.CarButtonsPanel;
-import com.example.lift.buttonpanel.PanelController;
+import com.example.lift.car.CabinEngineImpl;
+import com.example.lift.car.api.Cabin;
+import com.example.lift.car.CabinImpl;
+import com.example.lift.car.CabinController;
+import com.example.lift.car.api.CabinEngine;
 import com.example.lift.rest.RequestParamsValidator;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +29,21 @@ public class ApplicationConfig {
   @Bean
   public RequestParamsValidator requestParamsValidator() {
     return new RequestParamsValidator(numberOfFloors);
+  }
+
+  @Bean
+  public Cabin cabin() {
+    return new CabinImpl();
+  }
+
+  @Bean
+  public CabinEngine engine(ApplicationEventPublisher applicationEventPublisher) {
+    return new CabinEngineImpl(applicationEventPublisher);
+  }
+
+  @Bean
+  public CabinController cabinController(ApplicationEventPublisher applicationEventPublisher) {
+    return new CabinController(cabin(), engine(applicationEventPublisher));
   }
 
   @Bean

@@ -1,4 +1,4 @@
 package com.example.lift.buttonpanel;
 
-public class PanelController {
+public class PanelControllerTest {
 }

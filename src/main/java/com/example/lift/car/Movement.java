@@ -1,4 +1,5 @@
 package com.example.lift.car;
 
-public class Cabin {
+enum Movement {
+  UP, DOWN, NONE
 }
