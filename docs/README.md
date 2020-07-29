@@ -9,7 +9,7 @@ port = 8080
 ```
 
 
-###API
+### API
 REST Method | Rest Endpoint | Description
 ------------|---------------|------------|
 GET | [``/outside``](api.md#get-outside) | [Endpoint to simulate press call elevator button](api.md#get-outside)
