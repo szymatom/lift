@@ -1,7 +1,6 @@
 package com.example.lift;
 
-import com.example.lift.buttonpanel.PanelConfig;
-import com.example.lift.buttonpanel.PanelController;
+import com.example.lift.config.PanelConfig;
 import com.example.lift.config.ApplicationConfig;
 import com.example.lift.rest.ButtonPushEndpoint;
 

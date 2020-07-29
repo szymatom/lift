@@ -1,6 +1,5 @@
 package com.example.lift.rest;
 
-import com.example.lift.common.Direction;
 import com.example.lift.event.CarButtonPressedEvent;
 import com.example.lift.event.CallButtonPressedEvent;
 
@@ -22,14 +21,13 @@ public class ButtonPushEndpoint {
   final RequestParamsValidator requestParamsValidator;
 
   @GetMapping("/outside")
-  public ResponseEntity<String> pushDirectionButton(@RequestParam(name = "floor", defaultValue = "0") String floor,
-                                                    @RequestParam(name = "direction", defaultValue = "up") String direction) {
+  public ResponseEntity<String> pushDirectionButton(@RequestParam(name = "floor", defaultValue = "0") String floor) {
 
-    if(!requestParamsValidator.isValidFloorAndDirection(floor, direction))
+    if(!requestParamsValidator.isValidFloor(floor))
       return ResponseEntity.badRequest().build();
 
-    applicationEventPublisher.publishEvent(new CallButtonPressedEvent(this, parseInt(floor), getDirection(direction)));
-    return ResponseEntity.ok(String.format("Call button pressed: floor %s, direction %s", floor, direction));
+    applicationEventPublisher.publishEvent(new CallButtonPressedEvent(this, parseInt(floor)));
+    return ResponseEntity.ok(String.format("Call button pressed: floor %s", floor));
   }
 
   @GetMapping("/inside")
@@ -40,9 +38,5 @@ public class ButtonPushEndpoint {
 
     applicationEventPublisher.publishEvent(new CarButtonPressedEvent(this, parseInt(floor)));
     return ResponseEntity.ok(String.format("Elevator car floor button pressed: %s", floor));
-  }
-
-  private Direction getDirection(String direction) {
-    return Direction.valueOf(direction.toUpperCase());
   }
 }

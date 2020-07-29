@@ -1,7 +1,8 @@
 package com.example.lift.car.api;
 
+import com.example.lift.common.Movement;
+
 public interface CabinEngine {
-  void moveUp();
-  void moveDown();
+  void move(Movement direction);
   void stop();
 }

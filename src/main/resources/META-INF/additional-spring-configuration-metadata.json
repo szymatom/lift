@@ -4,5 +4,10 @@
       "name": "numberOfFloors",
       "type": "java.lang.Integer",
       "description": "Number of floors in the building."
+    },
+    {
+      "name": "speed",
+      "type": "java.lang.Integer",
+      "description": "Time in miliseconds needed to get one floor above or below."
     }
   ] }

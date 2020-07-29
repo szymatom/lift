@@ -19,13 +19,6 @@ class RequestParamsValidatorTest {
     assertThat(underTest.isValidFloor(floor)).isEqualTo(expectedResult);
   }
 
-  @ParameterizedTest(name = "{index} => Validation result for floor ''{0}'' and direction ''{1}''should be ''{2}''")
-  @MethodSource("floorAnddirection")
-  void shouldValidateFloorAndDirection(String floor, String direction, boolean expectedResult) {
-    //then
-    assertThat(underTest.isValidFloorAndDirection(floor, direction)).isEqualTo(expectedResult);
-  }
-
   private static Stream<Arguments> floor() {
     return Stream.of(
         Arguments.of("0", true),
@@ -34,19 +27,6 @@ class RequestParamsValidatorTest {
         Arguments.of("3", false),
         Arguments.of("non_integer", false),
         Arguments.of("-1", false)
-    );
-  }
-
-  private static Stream<Arguments> floorAnddirection() {
-    return Stream.of(
-        Arguments.of("0", "UP", true),
-        Arguments.of("0", "DOWN", false),
-        Arguments.of("2", "up", false),
-        Arguments.of("2", "down", true),
-        Arguments.of("1", "uP", true),
-        Arguments.of("6", "Down", false),
-        Arguments.of("0", "left", false),
-        Arguments.of(null, null, false)
     );
   }
 }

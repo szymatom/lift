@@ -5,11 +5,10 @@ import org.springframework.context.ApplicationEvent;
 import lombok.Getter;
 
 @Getter
-public class CallButtonActivatedEvent extends ApplicationEvent {
-
+public class ButtonDeactivatedEvent extends ApplicationEvent {
   private final int floor;
 
-  public CallButtonActivatedEvent(Object source, int floor) {
+  public ButtonDeactivatedEvent(Object source, int floor) {
     super(source);
     this.floor = floor;
   }
