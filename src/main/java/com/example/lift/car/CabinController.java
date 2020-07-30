@@ -61,7 +61,7 @@ public class CabinController {
     }
   }
 
-  private synchronized void nextMove() {
+  private void nextMove() {
     nextStop = movementPlan.getNextStop();
     if (isStoppedAtTheFloor(nextStop))
       applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));

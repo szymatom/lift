@@ -25,7 +25,6 @@ public class ApplicationConfig {
     return new RequestParamsValidator(numberOfFloors);
   }
 
-
   @Bean
   public AbstractRequestLoggingFilter requestLoggingFilter() {
     return new AbstractRequestLoggingFilter() {
