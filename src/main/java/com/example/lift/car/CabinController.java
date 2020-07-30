@@ -15,10 +15,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.example.lift.common.Movement.*;
+import static lombok.AccessLevel.PACKAGE;
 
 @RequiredArgsConstructor
+@Slf4j
 public class CabinController {
 
   private final Cabin cabin;
@@ -26,6 +30,7 @@ public class CabinController {
   private final MovementPlan movementPlan;
   private final ApplicationEventPublisher applicationEventPublisher;
 
+  @Setter(value = PACKAGE)
   private volatile int nextStop;
 
   @EventListener
@@ -54,8 +59,11 @@ public class CabinController {
 
   private void handleStop() {
     if (nextStop == cabin.getPosition().getFloor()) {
+      log.info("Lift arrived at next stop at {}", nextStop);
+      log.info("Stopping engine and cabin, deactivating car/call button");
       engine.stop();
       cabin.stop();
+      movementPlan.removeFirst();
       applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
       nextMove();
     }
@@ -63,11 +71,17 @@ public class CabinController {
 
   private void nextMove() {
     nextStop = movementPlan.getNextStop();
-    if (isStoppedAtTheFloor(nextStop))
+    if (isStoppedAtTheFloor(nextStop)) {
+      log.info("Lift is already stopped at the floor {}, deactivating car/call button", nextStop);
+      movementPlan.removeFirst();
       applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
+    }
 
-    if (NONE.equals(cabin.getMovement()))
-      engine.move(getMoveDirection(nextStop));
+    if (NONE.equals(cabin.getMovement())) {
+      final Movement direction = getMoveDirection(nextStop);
+      log.info("Starting engine to move {} to next stop at {}", direction, nextStop);
+      engine.move(direction);
+    }
   }
 
   private Movement getMoveDirection(int nextStop) {
