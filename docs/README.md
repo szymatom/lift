@@ -12,6 +12,6 @@ port = 8080
 ### API
 REST Method | Rest Endpoint | Description
 ------------|---------------|------------|
-GET | [``/outside``](api.md#get-outside) | [Endpoint to simulate press call elevator button](api.md#get-outside)
-GET | [``/inside``](api.md#get-inside) | [Endpoint to simulate floor button press inside the cabin](api.md#get-inside)
+GET | [``/outside``](api.md#get-outside) | [Endpoint to emulate presses of call elevator button](api.md#get-outside)
+GET | [``/inside``](api.md#get-inside) | [Endpoint to emulate presses of floor buttons inside the cabin](api.md#get-inside)
 
