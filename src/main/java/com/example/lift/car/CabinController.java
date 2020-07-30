@@ -30,13 +30,13 @@ public class CabinController {
 
   @EventListener
   public void handleCallButtonActivated(CallButtonActivatedEvent event) {
-    movementPlan.addFloor(event.getFloor(), cabin.getMovement(), cabin.getPosition());
+    movementPlan.addFloor(event.getFloor(), cabin.getPosition());
     nextMove();
   }
 
   @EventListener
   public void handleCarButtonActivated(CarButtonActivatedEvent event) {
-    movementPlan.addFloor(event.getFloor(), cabin.getMovement(), cabin.getPosition());
+    movementPlan.addFloor(event.getFloor(), cabin.getPosition());
     nextMove();
   }
 
