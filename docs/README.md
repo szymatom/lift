@@ -3,7 +3,7 @@ This is simple lift model using Spring and Tomcat where REST requests are used t
 All the actions performed by elevator are presented in log (console and file). 
 Default parameters are:
 ```
-speed = 4000 //time in miliseconds to get one floor up or down
+speed = 4000 //time in milliseconds to get one floor up or down
 numberOfFloors = 10
 port = 8080
 ```

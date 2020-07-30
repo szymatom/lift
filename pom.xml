@@ -89,6 +89,7 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured-common</artifactId>
             <version>4.3.0</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

@@ -9,7 +9,7 @@ import com.example.lift.common.Movement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+
 import lombok.extern.slf4j.Slf4j;
 
 import static com.example.lift.common.Movement.*;
@@ -21,7 +21,6 @@ public class CabinImpl implements Cabin {
   private static final String REPORT_POSITION = "Current cabin position: {}";
 
   @Getter
-  @Setter
   private Movement movement;
   @Getter
   private Position position;

@@ -7,33 +7,45 @@ import com.example.lift.event.EngineMovingUpEvent;
 
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
+import static com.example.lift.common.Movement.NONE;
 import static com.example.lift.common.Movement.UP;
-import static java.util.Objects.nonNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static lombok.AccessLevel.PACKAGE;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
 public class CabinEngineImpl implements CabinEngine {
 
+  private final ScheduledExecutorService scheduler;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final int speed;
-  private Timer timer;
+  private ScheduledFuture<?> future;
+
+  @Setter(value = PACKAGE)
+  private boolean engineInMotion;
 
   @Override
   public void move(Movement direction) {
-    if(nonNull(timer))
+    if(engineInMotion)
       throw new AttemptToStartAlreadyRunningEngineException();
 
-    timer = new Timer();
-    timer.scheduleAtFixedRate(getTask(direction), 0, speed);
+    if(NONE.equals(direction)) {
+      stop();
+      return;
+    }
+
+    future = scheduler.scheduleWithFixedDelay(getTask(direction), 0, speed, MILLISECONDS);
+    engineInMotion = true;
   }
 
-  private TimerTask getTask(Movement direction) {
+  private Runnable getTask(Movement direction) {
     return UP.equals(direction) ?
         new MoveUpTimer():
         new MoveDownTimer();
@@ -41,12 +53,12 @@ public class CabinEngineImpl implements CabinEngine {
 
   @Override
   public void stop() {
-    timer.cancel();
-    timer = null;
+    future.cancel(true);
+    engineInMotion = false;
     log.info("Engine was stopped");
   }
 
-  private class MoveUpTimer extends TimerTask {
+  private class MoveUpTimer implements Runnable {
     @Override
     public void run() {
       log.info("Engine moving up");
@@ -54,7 +66,7 @@ public class CabinEngineImpl implements CabinEngine {
     }
   }
 
-  private class MoveDownTimer extends TimerTask {
+  private class MoveDownTimer implements Runnable {
     @Override
     public void run() {
       log.info("Engine moving down");
@@ -62,5 +74,5 @@ public class CabinEngineImpl implements CabinEngine {
     }
   }
 
-  private static class AttemptToStartAlreadyRunningEngineException extends RuntimeException{}
+  static class AttemptToStartAlreadyRunningEngineException extends RuntimeException{}
 }
