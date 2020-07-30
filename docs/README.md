@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/szymatom/lift.svg?branch=master)](https://travis-ci.com/szymatom/lift.svg?branch=master)
 ## Lift model
 This is simple lift model using Spring and Tomcat where REST requests are used to simulate call/lift button presses.
 All the actions performed by elevator are presented in log (console and file). 
