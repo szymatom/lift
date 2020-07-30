@@ -22,7 +22,7 @@ import static com.example.lift.common.Movement.NONE;
 @Configuration
 public class CarConfig {
 
-  @Value("speed")
+  @Value("${speed:4000}")
   private int speed;
 
   @Bean
