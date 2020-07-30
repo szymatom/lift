@@ -4,9 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-import static com.example.lift.common.ButtonState.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ButtonsPanelTest {
   private final int numberOfFloors = 10;
@@ -20,9 +19,9 @@ class ButtonsPanelTest {
     underTest.activate(5);
 
     //then
-    assertThat(IntStream.range(0, numberOfFloors).filter(underTest::isInactive).count())
-        .isEqualTo(numberOfFloors - 1);
-    assertEquals(ACTIVE, underTest.getButtonState(5));
+    assertThat(IntStream.range(0, numberOfFloors).filter(underTest::isActive).count())
+        .isEqualTo(1);
+    assertTrue(underTest.isActive(5));
 
     //teardown
     underTest.deactivate(5);
@@ -38,7 +37,6 @@ class ButtonsPanelTest {
     underTest.deactivate(5);
 
     //then
-    assertThat(IntStream.range(0, 10).filter(underTest::isInactive).count())
-        .isEqualTo(numberOfFloors);
+    assertThat(IntStream.range(0, numberOfFloors).filter(underTest::isActive).count()).isZero();
   }
 }

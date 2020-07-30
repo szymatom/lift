@@ -1,6 +1,7 @@
 package com.example.lift.buttonpanel;
 
 import com.example.lift.event.ButtonDeactivatedEvent;
+import com.example.lift.event.CallButtonActivatedEvent;
 import com.example.lift.event.CallButtonPressedEvent;
 import com.example.lift.event.CarButtonActivatedEvent;
 import com.example.lift.event.CarButtonPressedEvent;
@@ -29,26 +30,28 @@ public class PanelController {
   public void handleCarButtonPressedEvent(CarButtonPressedEvent event) {
     final int floor = event.getFloor();
 
-    if (carButtonsPanel.isInactive(floor)) {
-      log.info("Activating car button, floor {}", floor);
-      carButtonsPanel.activate(floor);
-      applicationEventPublisher.publishEvent(new CarButtonActivatedEvent(this, floor));
-    } else {
+    if(carButtonsPanel.isActive(floor)) {
       log.info("Car button already active, floor {}", floor);
+      return;
     }
+
+    log.info("Activating car button, floor {}", floor);
+    carButtonsPanel.activate(floor);
+    applicationEventPublisher.publishEvent(new CarButtonActivatedEvent(this, floor));
   }
 
   @EventListener
   public void handleCallButtonPressedEvent(CallButtonPressedEvent event) {
     final int floor = event.getFloor();
 
-    if (callButtonsPanel.isInactive(floor)) {
-      log.info("Activating call button, floor {}", floor);
-      callButtonsPanel.activate(floor);
-      applicationEventPublisher.publishEvent(new CarButtonActivatedEvent(this, floor));
-    } else {
+    if(callButtonsPanel.isActive(floor)) {
       log.info("Call button already active, floor {}", floor);
+      return;
     }
+
+    log.info("Activating call button, floor {}", floor);
+    callButtonsPanel.activate(floor);
+    applicationEventPublisher.publishEvent(new CallButtonActivatedEvent(this, floor));
   }
 
   @EventListener

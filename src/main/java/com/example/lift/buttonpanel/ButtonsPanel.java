@@ -32,14 +32,6 @@ public class ButtonsPanel {
     log.info("Car button deactivated, floor: {}", floor);
   }
 
-  ButtonState getButtonState(int floor) {
-    return floorButtons.get(floor);
-  }
-
-  boolean isInactive(int floor) {
-    return INACTIVE.equals(floorButtons.get(floor));
-  }
-
   boolean isActive(int floor) {
     return ACTIVE.equals(floorButtons.get(floor));
   }

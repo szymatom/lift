@@ -79,7 +79,7 @@ class ButtonPushEndpointTest {
   void shouldFailWithBadRequestForOutside() {
     given()
         .standaloneSetup(buttonPushEndpoint)
-        .param("floor", "0")
+        .param("floor", "-1")
         .when()
         .get("/outside")
         .then()
