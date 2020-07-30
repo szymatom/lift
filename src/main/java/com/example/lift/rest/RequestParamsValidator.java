@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 @Slf4j
 @RequiredArgsConstructor
 public class RequestParamsValidator {
+
   final int numberOfFloors;
 
   public boolean isValidFloor(String floor) {
@@ -15,12 +16,12 @@ public class RequestParamsValidator {
 
     try {
       parameter = parseInt(floor);
-    } catch(NumberFormatException e) {
+    } catch (NumberFormatException e) {
       log.error("Parameter floor must be integer number");
       return false;
     }
 
-    if(parameter < 0 || parameter > numberOfFloors - 1) {
+    if (parameter < 0 || parameter > numberOfFloors - 1) {
       log.error("Parameter \"floor\" must have value between {} and {} inclusive", 0, numberOfFloors - 1);
       return false;
     }

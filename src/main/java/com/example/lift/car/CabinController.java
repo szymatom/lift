@@ -53,7 +53,7 @@ public class CabinController {
   }
 
   private void handleStop() {
-    if(nextStop == cabin.getPosition().getFloor()) {
+    if (nextStop == cabin.getPosition().getFloor()) {
       engine.stop();
       cabin.stop();
       applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
@@ -66,9 +66,8 @@ public class CabinController {
     if (isStoppedAtTheFloor(nextStop))
       applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
 
-    if (NONE.equals(cabin.getMovement())) {
+    if (NONE.equals(cabin.getMovement()))
       engine.move(getMoveDirection(nextStop));
-    }
   }
 
   private Movement getMoveDirection(int nextStop) {

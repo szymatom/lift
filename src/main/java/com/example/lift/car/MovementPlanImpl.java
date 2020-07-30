@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class MovementPlanImpl implements MovementPlan {
+
   private final LinkedList<Integer> nextStops;
 
   @Override
@@ -20,7 +21,6 @@ public class MovementPlanImpl implements MovementPlan {
       nextStops.push(floor);
     else
       findPlaceFor(floor);
-
   }
 
   @Override

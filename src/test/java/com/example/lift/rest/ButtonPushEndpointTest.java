@@ -3,12 +3,12 @@ package com.example.lift.rest;
 import com.example.lift.event.CallButtonPressedEvent;
 import com.example.lift.event.CarButtonPressedEvent;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -18,6 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class ButtonPushEndpointTest {
 
   @Captor
@@ -28,11 +29,6 @@ class ButtonPushEndpointTest {
 
   private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
   ButtonPushEndpoint buttonPushEndpoint = new ButtonPushEndpoint(applicationEventPublisher, new RequestParamsValidator(10));
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.initMocks(this);
-  }
 
   @Test
   void shouldSuccessfullyPressInsideButton() {

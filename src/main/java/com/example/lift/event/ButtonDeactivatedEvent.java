@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class ButtonDeactivatedEvent extends ApplicationEvent {
+
   private final int floor;
 
   public ButtonDeactivatedEvent(Object source, int floor) {
