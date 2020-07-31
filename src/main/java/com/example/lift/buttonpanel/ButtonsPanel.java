@@ -1,35 +1,36 @@
 package com.example.lift.buttonpanel;
 
-import com.example.lift.common.ButtonState;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static com.example.lift.common.ButtonState.*;
+import static com.example.lift.buttonpanel.ButtonState.*;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class ButtonsPanel {
-  private final List<ButtonState> floorButtons;
 
-  public ButtonsPanel(int numberOfFloors) {
+  private final List<ButtonState> floorButtons;
+  private final String designation;
+
+  public ButtonsPanel(int numberOfFloors, String designation) {
     this.floorButtons = IntStream.range(0, numberOfFloors)
         .mapToObj(floorButton -> INACTIVE)
         .collect(collectingAndThen(toList(), CopyOnWriteArrayList::new));
+    this.designation = designation;
   }
 
   void activate(int floor) {
     floorButtons.set(floor, ACTIVE);
-    log.info("Car button activated, floor: {}", floor);
+    log.info("{} button activated, floor: {}", designation, floor);
   }
 
   void deactivate(int floor) {
     floorButtons.set(floor, INACTIVE);
-    log.info("Car button deactivated, floor: {}", floor);
+    log.info("{} button deactivated, floor: {}", designation, floor);
   }
 
   boolean isActive(int floor) {

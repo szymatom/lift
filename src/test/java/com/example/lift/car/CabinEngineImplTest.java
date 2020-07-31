@@ -15,7 +15,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static com.example.lift.common.Movement.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,13 +46,13 @@ class CabinEngineImplTest {
     ((CabinEngineImpl) underTest).setEngineInMotion(true);
 
     //then
-    assertThrows(CabinEngineImpl.AttemptToStartAlreadyRunningEngineException.class, () -> underTest.move(UP));
+    assertThrows(CabinEngineImpl.AttemptToStartAlreadyRunningEngineException.class, underTest::moveUp);
   }
 
   @Test
   void shouldStartMoving() {
     //when
-    underTest.move(UP);
+    underTest.moveUp();
 
     //then
     verify(scheduler, times(1)).scheduleWithFixedDelay(isA(Runnable.class), eq(0L), eq(Long.valueOf(speed)), eq(MILLISECONDS));
@@ -61,17 +60,11 @@ class CabinEngineImplTest {
 
   @Test
   void shouldStopMoving() {
+    //given
+    ((CabinEngineImpl) underTest).setEngineInMotion(true);
+
     //when
     underTest.stop();
-
-    //then
-    verify(future, times(1)).cancel(eq(true));
-  }
-
-  @Test
-  void shouldStopMovingIfDirectionIsNone() {
-    //when
-    underTest.move(NONE);
 
     //then
     verify(future, times(1)).cancel(eq(true));
@@ -83,7 +76,7 @@ class CabinEngineImplTest {
     final CabinEngine cabinEngine = new CabinEngineImpl(newScheduledThreadPool(1), applicationEventPublisher, speed);
 
     //when
-    cabinEngine.move(UP);
+    cabinEngine.moveUp();
 
     //then
     verify(applicationEventPublisher, timeout(speed)).publishEvent(isA(EngineMovingUpEvent.class));
@@ -95,7 +88,7 @@ class CabinEngineImplTest {
     final CabinEngine cabinEngine = new CabinEngineImpl(newScheduledThreadPool(1), applicationEventPublisher, speed);
 
     //when
-    cabinEngine.move(DOWN);
+    cabinEngine.moveDown();
 
     //then
     verify(applicationEventPublisher, timeout(speed)).publishEvent(isA(EngineMovingDownEvent.class));

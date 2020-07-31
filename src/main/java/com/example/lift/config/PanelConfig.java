@@ -18,13 +18,13 @@ public class PanelConfig {
   @Bean
   @Scope("singleton")
   public ButtonsPanel carButtonsPanel() {
-    return new ButtonsPanel(numberOfFloors);
+    return new ButtonsPanel(numberOfFloors, "Car");
   }
 
   @Bean
   @Scope("singleton")
   public ButtonsPanel callButtonsPanel() {
-    return new ButtonsPanel(numberOfFloors);
+    return new ButtonsPanel(numberOfFloors, "Call");
   }
 
   @Bean

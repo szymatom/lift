@@ -4,7 +4,6 @@ import com.example.lift.car.api.AtFloor;
 import com.example.lift.car.api.Cabin;
 import com.example.lift.car.api.CabinEngine;
 import com.example.lift.car.api.MovementPlan;
-import com.example.lift.common.Movement;
 import com.example.lift.event.ButtonDeactivatedEvent;
 import com.example.lift.event.CallButtonActivatedEvent;
 import com.example.lift.event.CarButtonActivatedEvent;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.example.lift.common.Movement.*;
 import static lombok.AccessLevel.PACKAGE;
 
 @RequiredArgsConstructor
@@ -35,69 +33,73 @@ public class CabinController {
 
   @EventListener
   public void handleCallButtonActivated(CallButtonActivatedEvent event) {
-    movementPlan.addFloor(event.getFloor(), cabin.getPosition());
-    nextMove();
+    buttonActivatedHandler(event.getFloor());
   }
 
   @EventListener
   public void handleCarButtonActivated(CarButtonActivatedEvent event) {
-    movementPlan.addFloor(event.getFloor(), cabin.getPosition());
-    nextMove();
+    buttonActivatedHandler(event.getFloor());
   }
 
   @EventListener
   public void handleMovingUpEvent(@SuppressWarnings("unused") EngineMovingUpEvent event) {
     cabin.moveUp();
-    handleStop();
+    if (shouldStop())
+      handleStop();
   }
 
   @EventListener
   public void handleMovingDownEvent(@SuppressWarnings("unused") EngineMovingDownEvent event) {
     cabin.moveDown();
-    handleStop();
+    if (shouldStop())
+      handleStop();
   }
 
-  private void handleStop() {
-    if (nextStop == cabin.getPosition().getFloor()) {
-      log.info("Lift arrived at next stop at {}", nextStop);
-      log.info("Stopping engine and cabin, deactivating car/call button");
-      engine.stop();
-      cabin.stop();
-      movementPlan.removeFirst();
-      applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
-      nextMove();
+  private void buttonActivatedHandler(int floor) {
+    if (isStoppedAtTheFloor(floor)) {
+      log.info("Lift is already stopped at the floor {}", floor);
+      applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, floor));
+      return;
     }
+    movementPlan.addFloor(floor, cabin.getPosition());
+    nextMove();
   }
 
   private void nextMove() {
     nextStop = movementPlan.getNextStop();
-    if (isStoppedAtTheFloor(nextStop)) {
-      log.info("Lift is already stopped at the floor {}, deactivating car/call button", nextStop);
-      movementPlan.removeFirst();
-      applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
-    }
-
-    if (NONE.equals(cabin.getMovement())) {
-      final Movement direction = getMoveDirection(nextStop);
-      log.info("Starting engine to move {} to next stop at {}", direction, nextStop);
-      engine.move(direction);
-    }
+    if (shouldStartMoving(cabin))
+      startMoving(nextStop);
+    else if (shouldStop())
+      handleStop();
   }
 
-  private Movement getMoveDirection(int nextStop) {
+  private boolean shouldStop() {
+    return nextStop == cabin.getPosition().getFloor();
+  }
+
+  private void handleStop() {
+    log.info("Lift arrived at next stop at {}", nextStop);
+    log.info("Stopping engine and cabin");
+    engine.stop();
+    cabin.stop();
+    applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, nextStop));
+    movementPlan.removeFirst();
+    if(movementPlan.hasNext())
+      nextMove();
+  }
+
+  private boolean shouldStartMoving(Cabin cabin) {
+    return cabin.getPosition() instanceof AtFloor;
+  }
+
+  private void startMoving(int nextStop) {
     if (nextStop > cabin.getPosition().getFloor())
-      return UP;
+      engine.moveUp();
     else if (nextStop < cabin.getPosition().getFloor())
-      return DOWN;
-
-    return NONE;
+      engine.moveDown();
   }
 
-  private boolean isStoppedAtTheFloor(int nextStop) {
-    return NONE.equals(cabin.getMovement()) && isAtTheFloor(nextStop);
-  }
-
-  private boolean isAtTheFloor(int floor) {
+  private boolean isStoppedAtTheFloor(int floor) {
     return cabin.getPosition() instanceof AtFloor && cabin.getPosition().getFloor() == floor;
   }
 }

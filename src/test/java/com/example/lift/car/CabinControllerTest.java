@@ -22,8 +22,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import static com.example.lift.common.Movement.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,7 +57,6 @@ class CabinControllerTest {
     //given
     Position position = new AtFloor(0);
     when(cabin.getPosition()).thenReturn(position);
-    when(cabin.getMovement()).thenReturn(NONE);
     when(movementPlan.getNextStop()).thenReturn(5);
 
     //when
@@ -66,7 +65,7 @@ class CabinControllerTest {
     //then
     verify(movementPlan, times(1)).addFloor(eq(5), eq(position));
     verify(applicationEventPublisher, never()).publishEvent(isA(ButtonDeactivatedEvent.class));
-    verify(engine, times(1)).move(eq(UP));
+    verify(engine, times(1)).moveUp();
   }
 
   @Test
@@ -74,16 +73,14 @@ class CabinControllerTest {
     //given
     Position position = new AtFloor(0);
     when(cabin.getPosition()).thenReturn(position);
-    when(cabin.getMovement()).thenReturn(NONE);
-    when(movementPlan.getNextStop()).thenReturn(0);
 
     //when
     underTest.handleCallButtonActivated(new CallButtonActivatedEvent(this, 0));
 
     //then
-    verify(movementPlan, times(1)).addFloor(eq(0), eq(position));
+    verify(movementPlan, never()).addFloor(any(Integer.class), any(Position.class));
     verify(applicationEventPublisher, times(1)).publishEvent(isA(ButtonDeactivatedEvent.class));
-    verify(engine, never()).move(eq(UP));
+    verify(engine, never()).moveUp();
   }
 
   @Test
@@ -91,7 +88,6 @@ class CabinControllerTest {
     //given
     Position position = new BelowFloor(5);
     when(cabin.getPosition()).thenReturn(position);
-    when(cabin.getMovement()).thenReturn(UP);
     when(movementPlan.getNextStop()).thenReturn(7);
 
     //when
@@ -100,7 +96,7 @@ class CabinControllerTest {
     //then
     verify(movementPlan, times(1)).addFloor(eq(6), eq(position));
     verify(applicationEventPublisher, never()).publishEvent(isA(ButtonDeactivatedEvent.class));
-    verify(engine, never()).move(eq(UP));
+    verify(engine, never()).moveUp();
   }
 
   @Test
@@ -108,7 +104,6 @@ class CabinControllerTest {
     //given
     Position position = new AtFloor(0);
     when(cabin.getPosition()).thenReturn(position);
-    when(cabin.getMovement()).thenReturn(NONE);
     when(movementPlan.getNextStop()).thenReturn(5);
 
     //when
@@ -117,7 +112,7 @@ class CabinControllerTest {
     //then
     verify(movementPlan, times(1)).addFloor(eq(5), eq(position));
     verify(applicationEventPublisher, never()).publishEvent(isA(ButtonDeactivatedEvent.class));
-    verify(engine, times(1)).move(eq(UP));
+    verify(engine, times(1)).moveUp();
   }
 
   @Test
@@ -125,33 +120,34 @@ class CabinControllerTest {
     //given
     Position position = new AtFloor(0);
     when(cabin.getPosition()).thenReturn(position);
-    when(cabin.getMovement()).thenReturn(NONE);
-    when(movementPlan.getNextStop()).thenReturn(0);
 
     //when
     underTest.handleCarButtonActivated(new CarButtonActivatedEvent(this, 0));
 
     //then
-    verify(movementPlan, times(1)).addFloor(eq(0), eq(position));
+    verify(movementPlan, never()).addFloor(any(Integer.class), any(Position.class));
     verify(applicationEventPublisher, times(1)).publishEvent(isA(ButtonDeactivatedEvent.class));
-    verify(engine, never()).move(eq(UP));
+    verify(engine, never()).moveUp();
   }
 
   @Test
   void shouldHandleCarButtonActivatedWhileMovingUp() {
     //given
-    Position position = new BelowFloor(5);
-    when(cabin.getPosition()).thenReturn(position);
-    when(cabin.getMovement()).thenReturn(UP);
-    when(movementPlan.getNextStop()).thenReturn(7);
+    Position position = new BelowFloor(6);
+    when(cabin.getPosition()).thenReturn(position, position, position, new AtFloor(6));
+    when(movementPlan.getNextStop()).thenReturn(6, 7);
+    when(movementPlan.hasNext()).thenReturn(true, false);
+    underTest.setNextStop(7);
 
     //when
     underTest.handleCarButtonActivated(new CarButtonActivatedEvent(this, 6));
 
     //then
     verify(movementPlan, times(1)).addFloor(eq(6), eq(position));
-    verify(applicationEventPublisher, never()).publishEvent(isA(ButtonDeactivatedEvent.class));
-    verify(engine, never()).move(eq(UP));
+    verify(applicationEventPublisher, times(1)).publishEvent(isA(ButtonDeactivatedEvent.class));
+    verify(cabin, times(1)).stop();
+    verify(engine, times(1)).stop();
+    verify(engine, times(1)).moveUp();
   }
 
   @Test
@@ -178,6 +174,7 @@ class CabinControllerTest {
     //given
     Position position = new BelowFloor(5);
     when(cabin.getPosition()).thenReturn(position);
+    when(movementPlan.hasNext()).thenReturn(true);
     underTest.setNextStop(5);
 
     //when
@@ -218,6 +215,7 @@ class CabinControllerTest {
     //given
     Position position = new AboveFloor(3);
     when(cabin.getPosition()).thenReturn(position);
+    when(movementPlan.hasNext()).thenReturn(true);
     underTest.setNextStop(3);
 
     //when

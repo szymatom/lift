@@ -1,7 +1,6 @@
 package com.example.lift.car;
 
 import com.example.lift.car.api.CabinEngine;
-import com.example.lift.common.Movement;
 import com.example.lift.event.EngineMovingDownEvent;
 import com.example.lift.event.EngineMovingUpEvent;
 
@@ -10,8 +9,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import static com.example.lift.common.Movement.NONE;
-import static com.example.lift.common.Movement.UP;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static lombok.AccessLevel.PACKAGE;
 
@@ -32,27 +29,27 @@ public class CabinEngineImpl implements CabinEngine {
   private boolean engineInMotion;
 
   @Override
-  public void move(Movement direction) {
+  public void moveUp() {
     if(engineInMotion)
       throw new AttemptToStartAlreadyRunningEngineException();
 
-    if(NONE.equals(direction)) {
-      stop();
-      return;
-    }
-
-    future = scheduler.scheduleWithFixedDelay(getTask(direction), 0, speed, MILLISECONDS);
+    future = scheduler.scheduleWithFixedDelay(new MoveUpTimer(), 0, speed, MILLISECONDS);
     engineInMotion = true;
   }
 
-  private Runnable getTask(Movement direction) {
-    return UP.equals(direction) ?
-        new MoveUpTimer():
-        new MoveDownTimer();
+  @Override
+  public void moveDown() {
+    if(engineInMotion)
+      throw new AttemptToStartAlreadyRunningEngineException();
+
+    future = scheduler.scheduleWithFixedDelay(new MoveDownTimer(), 0, speed, MILLISECONDS);
+    engineInMotion = true;
   }
 
   @Override
   public void stop() {
+    if(!engineInMotion)
+      return;
     future.cancel(true);
     engineInMotion = false;
     log.info("Engine was stopped");

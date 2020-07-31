@@ -34,6 +34,11 @@ public class MovementPlanImpl implements MovementPlan {
   }
 
   @Override
+  public boolean hasNext() {
+    return !nextStops.isEmpty();
+  }
+
+  @Override
   public int getNextStop() {
     final int next = nextStops.getFirst();
     log.info("Next stop is: {}", next);

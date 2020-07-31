@@ -13,7 +13,7 @@ class ButtonsPanelTest {
   @Test
   void shouldActivateButton(){
     //given
-    ButtonsPanel underTest = new ButtonsPanel(numberOfFloors);
+    ButtonsPanel underTest = new ButtonsPanel(numberOfFloors, "Car");
 
     //when
     underTest.activate(5);
@@ -30,7 +30,7 @@ class ButtonsPanelTest {
   @Test
   void shouldDeactivateButton(){
     //given
-    ButtonsPanel underTest = new ButtonsPanel(numberOfFloors);
+    ButtonsPanel underTest = new ButtonsPanel(numberOfFloors, "Call");
 
     //when
     underTest.activate(5);

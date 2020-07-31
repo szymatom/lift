@@ -1,4 +1,4 @@
-package com.example.lift.common;
+package com.example.lift.buttonpanel;
 
 public enum ButtonState {
   ACTIVE, INACTIVE

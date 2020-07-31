@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Scope;
 import java.util.LinkedList;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static com.example.lift.common.Movement.NONE;
 
 @Configuration
 public class CarConfig {
@@ -29,7 +28,7 @@ public class CarConfig {
   @Bean
   @Scope("singleton")
   public Cabin cabin() {
-    return new CabinImpl(NONE, new AtFloor(0));
+    return new CabinImpl(new AtFloor(0));
   }
 
   @Bean
