@@ -28,8 +28,10 @@ public class CabinController {
   private final MovementPlan movementPlan;
   private final ApplicationEventPublisher applicationEventPublisher;
 
+  private final Object lock = new Object();
+
   @Setter(value = PACKAGE)
-  private volatile int nextStop;
+  private int nextStop;
 
   @EventListener
   public void handleCallButtonActivated(CallButtonActivatedEvent event) {
@@ -43,26 +45,32 @@ public class CabinController {
 
   @EventListener
   public void handleMovingUpEvent(@SuppressWarnings("unused") EngineMovingUpEvent event) {
-    cabin.moveUp();
-    if (shouldStop())
-      handleStop();
+    synchronized(lock) {
+      cabin.moveUp();
+      if (shouldStop())
+        handleStop();
+    }
   }
 
   @EventListener
   public void handleMovingDownEvent(@SuppressWarnings("unused") EngineMovingDownEvent event) {
-    cabin.moveDown();
-    if (shouldStop())
-      handleStop();
+    synchronized(lock) {
+      cabin.moveDown();
+      if (shouldStop())
+        handleStop();
+    }
   }
 
   private void buttonActivatedHandler(int floor) {
-    if (isStoppedAtTheFloor(floor)) {
-      log.info("Lift is already stopped at the floor {}", floor);
-      applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, floor));
-      return;
+    synchronized (lock) {
+      if (isStoppedAtTheFloor(floor)) {
+        log.info("Lift is already stopped at the floor {}", floor);
+        applicationEventPublisher.publishEvent(new ButtonDeactivatedEvent(this, floor));
+        return;
+      }
+      movementPlan.addFloor(floor, cabin.getPosition());
+      nextMove();
     }
-    movementPlan.addFloor(floor, cabin.getPosition());
-    nextMove();
   }
 
   private void nextMove() {

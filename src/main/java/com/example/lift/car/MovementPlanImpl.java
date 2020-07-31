@@ -35,7 +35,12 @@ public class MovementPlanImpl implements MovementPlan {
 
   @Override
   public boolean hasNext() {
-    return !nextStops.isEmpty();
+    boolean result = !nextStops.isEmpty();
+
+    if(!result)
+      log.info("There are no more stops in the plan");
+
+    return result;
   }
 
   @Override

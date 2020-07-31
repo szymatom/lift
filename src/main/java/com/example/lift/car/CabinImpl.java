@@ -12,13 +12,17 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@AllArgsConstructor
 public class CabinImpl implements Cabin {
 
   private static final String REPORT_POSITION = "Current cabin position: {}";
 
   @Getter
   private Position position;
+
+  public CabinImpl(Position position) {
+    this.position = position;
+    log.info("Lift's cabin is waiting {}", position);
+  }
 
   @Override
   public void moveUp() {
