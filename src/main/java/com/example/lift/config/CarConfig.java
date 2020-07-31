@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 import java.util.LinkedList;
 
@@ -26,19 +25,16 @@ public class CarConfig {
   private int speed;
 
   @Bean
-  @Scope("singleton")
   public Cabin cabin() {
     return new CabinImpl(new AtFloor(0));
   }
 
   @Bean
-  @Scope("singleton")
   public CabinEngine engine(ApplicationEventPublisher applicationEventPublisher) {
     return new CabinEngineImpl(newScheduledThreadPool(1), applicationEventPublisher, speed);
   }
 
   @Bean
-  @Scope("singleton")
   public MovementPlan movementPlan() {
     return new MovementPlanImpl(new LinkedList<>());
   }

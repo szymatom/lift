@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class PanelConfig {
@@ -16,13 +15,11 @@ public class PanelConfig {
   private int numberOfFloors;
 
   @Bean
-  @Scope("singleton")
   public ButtonsPanel carButtonsPanel() {
     return new ButtonsPanel(numberOfFloors, "Car");
   }
 
   @Bean
-  @Scope("singleton")
   public ButtonsPanel callButtonsPanel() {
     return new ButtonsPanel(numberOfFloors, "Call");
   }
